@@ -1,4 +1,4 @@
-# This analysis utilized data from the following Netflix Dataset:
+# This analysis utilized data from the following Netflix Dataset using PostgreSQL:
 
 CREATE TABLE netflix_titles_info
     ("show_id" varchar(5), "type" varchar(7), "title" varchar(58), "country" varchar(74), "date_added" timestamp, "release_year" int, "rating" varchar(5), "duration" varchar(9), "listed_in" varchar(74))
@@ -61,4 +61,27 @@ VALUES
 
 # Analysis
 
-#
+# How many movie titles are there in the database?
+select count(*)
+from "netflix_titles_info"
+where netflix_titles_info.type='Movie';
+
+# Where was the most recent batch of tv shows and/or movies added to the database?
+select max(date(date_added))
+from "netflix_titles_info";
+
+# List all the movies and tv shows in alphabetical order.
+select (title)
+from "netflix_titles_info"
+order by Title asc;
+
+# Who was the director for movie The Starling?
+select (director)
+from "netflix_titles_info"
+left join "netflix_people"
+on netflix_titles_info.show_id=netflix_people.show_id
+where netflix_titles_info.title='The Starling';
+
+# What is the oldest movie in the database and what year was it made?
+select title, release_year
+from "netflix_titles_info"
