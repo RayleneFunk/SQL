@@ -40,3 +40,18 @@ from bit_db.Spotifydata
 order by popularity desc
 limit 10;
 
+# What is the longest song by artist?
+select artist_name, track_name, max(duration_ms)
+from spotifydata
+group by artist_name;
+
+
+# Calculate the average popularity for the artists in the Spotify data table. Then, for every artist with an average popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”.
+with temptable as (
+    select artist_name, avg(popularity) as avg_pop
+from spotifydata
+group by artist_name
+)
+select artist_name, avg_pop, 'Top Star' as tag
+from temptable
+where avg_pop>=90; 
