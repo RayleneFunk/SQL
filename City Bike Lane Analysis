@@ -1,0 +1,36 @@
+# For this project, I downloaded City Bike Lane data from Kaggle.
+# Then I created a table to insert City Bike Lane data into.
+# Finally, I performed analytics on the data using SQL. 
+
+#Creating the table: 
+CREATE TABLE BIT_DB.CityBikeLanes (
+id integer primary key,
+year_installed year not null,
+year_updated year not null,
+street varchar not null,
+width_feet integer not null,
+safetyrating integer not null,
+protected varchar not null)
+
+#Then I inserted the city bike lane Data .csv into the table.
+#Next, I explored the data using the following SQL. 
+
+# Find all streets that have bike lanes with a 4.0 safety rating or higher and label them as "safe lane".
+with temptable as (
+    select street, avg(safetyrating) as avg_safety
+    from citybikelanes
+    group by id
+)
+select street, avg_safety, 'Safe Lane' as tag
+from temptable
+where avg_safety>=4.0
+group by street;
+
+# list of all the bike lanes, both safety ratings for each lane, the average safety rating for each lane, and a label with the recommendation as "Remove", "Leave As-Is", or "Improvements Needed".
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating",
+case when AVG(safetyrating) OVER (PARTITION BY street) >=4 then "Leave As-Is"
+    when AVG(safetyrating) OVER (PARTITION BY street) >=2.5 then "Improvements Needed"
+    else "Remove"
+end as "Recommendations"
+FROM CityBikeLanes;
